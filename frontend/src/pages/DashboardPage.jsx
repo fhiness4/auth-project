@@ -1,12 +1,32 @@
 import { motion } from "framer-motion";
 import { useAuthStore } from "../store/authStore";
 import { formatDate } from "../utils/date";
+const url = 'http://localhost:8000/api/auth'
+import toast from "react-hot-toast";
 
 const DashboardPage = () => {
-	const { user, logout } = useAuthStore();
+	const { user, data, logout, error } = useAuthStore();
 
-	const handleLogout = () => {
-		logout();
+	const handleLogout = async() => {
+		const response = await fetch(`${url}/signout`, {
+            method: "POST",
+            mode: "cors",
+            headers:{
+                "content-Type": "application/json",
+                "authorization": `Bearer ${data.token}`,
+                "client": "not-browser"
+            },
+          });
+          const res = await response.json();
+			if (res.success) {
+				toast.success("Logged out successfully");
+			} else {
+				toast.error(res.message || "Error logging out");
+			}
+			setTimeout(() => {
+				logout(res);
+			}, 1000);
+		  console.log(res)
 	};
 	return (
 		<motion.div

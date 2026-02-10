@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import { useAuthStore } from "../store/authStore";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
 	const [name, setName] = useState("");
@@ -37,6 +38,7 @@ const SignUpPage = () => {
 		  	if(res.success){
 				setisloading(true);
 				seterr(res.message);
+				toast.success('account created successfully redirecting...')
 				// verify code sending
 						const coderesponse = await fetch(`${url}/send-code`, {
 						method: "PATCH",
