@@ -3,11 +3,12 @@ import { useAuthStore } from "../store/authStore";
 import { formatDate } from "../utils/date";
 const url = 'http://localhost:8000/api/auth'
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 
 const DashboardPage = () => {
 	const { user, data, logout, getuser, uploadimg } = useAuthStore();
-
+   const[isuploading, setisloading] = useState(false);
 	const handleLogout = async() => {
 		const response = await fetch(`${url}/signout`, {
             method: "POST",
@@ -33,6 +34,7 @@ const DashboardPage = () => {
 
 	const handleuploadchange = async (e)=>{
        const file = e.target.files[0];
+	   setisloading(true);
 	   if(!file){
 		   toast.error("Please select a file");
 		   return;
@@ -68,6 +70,7 @@ const DashboardPage = () => {
 		  console.log(res);
 		  if(res.success === true){
 			  uploadimg(res);
+			  setisloading(true);
 			  toast.success("Profile picture uploaded successfully");
 		  }else{
 			toast.error("profile picture upload failed");
@@ -90,13 +93,16 @@ const DashboardPage = () => {
 			<h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-600 text-transparent bg-clip-text'>
 				Dashboard
 			</h2>
-		<img src={user.profilepic} alt="profile" />
+		<img src={user.profilepic} alt="profile" className="w-60 h-60 rounded-full object-cover border-4 border-green-500 mx-auto"/>
            {/* upload profile pic */}
           <input 
+		  className="text-center mt-4 text-green-300 bg-transparent"
 		   type="file" 
 		   onChange={handleuploadchange}
 		  />
-
+           <span
+		   className="block mt-2 text-center text-green-300"
+		   >{isuploading ? "Uploading..." : "Upload Profile Picture"}</span>
 
 
 
