@@ -98,6 +98,7 @@ const DashboardPage = () => {
           <input 
 		  className="text-center mt-4 text-green-300 bg-transparent"
 		   type="file" 
+		   accept="image/*"
 		   onChange={handleuploadchange}
 		  />
            <span
@@ -135,7 +136,7 @@ const DashboardPage = () => {
 					<p className='text-gray-300'>
 						<span className='font-bold'>Last Login: </span>
 
-						{formatDate(user.lastLogin)}
+						{formatDate(user.updatedAt)}
 					</p>
 				</motion.div>
 			</div>
