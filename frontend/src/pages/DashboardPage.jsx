@@ -3,11 +3,10 @@ import { useAuthStore } from "../store/authStore";
 import { formatDate } from "../utils/date";
 const url = 'http://localhost:8000/api/auth'
 import toast from "react-hot-toast";
-import { useState } from "react";
+
 
 const DashboardPage = () => {
 	const { user, data, logout, getuser, uploadimg } = useAuthStore();
-	const [img, setimg] = useState("");
 
 	const handleLogout = async() => {
 		const response = await fetch(`${url}/signout`, {
@@ -39,20 +38,20 @@ const DashboardPage = () => {
 		   return;
 
 	   }
-	   const data = new FormData();	
-	   data.append("file", file);
-	   data.append("upload_preset","finesse");
-	   data.append("cloud_name","db4x6r4zm");
+	   const dat = new FormData();	
+	   dat.append("file", file);
+	   dat.append("upload_preset","finesse");
+	   dat.append("cloud_name","db4x6r4zm");
 	   const res = await fetch("https://api.cloudinary.com/v1_1/db4x6r4zm/image/upload", {
 		   method: "POST",
-		   body: data
+		   body: dat
 	   })
 	    const uploaaded = await res.json();
 		if (uploaaded.url) {
 			console.log(uploaaded, uploaaded.url);
 
 			// update user profile picture
-			const response = await fetch(`${url}/upload-img`, {
+			const respons = await fetch(`${url}/upload-img`, {
             method: "POST",
             mode: "cors",
             headers:{
@@ -65,8 +64,9 @@ const DashboardPage = () => {
                 url: uploaaded.url
             })
           });
-          const res = await response.json();
-		  if(res.success){
+          const res = await respons.json();
+		  console.log(res);
+		  if(res.success === true){
 			  uploadimg(res);
 			  toast.success("Profile picture uploaded successfully");
 		  }else{

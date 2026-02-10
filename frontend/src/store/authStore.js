@@ -31,8 +31,8 @@ export const useAuthStore = create((set) => ({
 			throw error;
 		}
 	},
-	uploadimg: async (response) => {
-		set({ isLoading: true, error: null });
+	uploadimg: async(res) => {
+		const response = await res;
 		try {
 			set({
 				isAuthenticated: true,
