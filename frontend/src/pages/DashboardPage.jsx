@@ -70,7 +70,7 @@ const DashboardPage = () => {
 		  console.log(res);
 		  if(res.success === true){
 			  uploadimg(res);
-			  setisloading(true);
+			  setisloading(false);
 			  toast.success("Profile picture uploaded successfully");
 		  }else{
 			toast.error("profile picture upload failed");
