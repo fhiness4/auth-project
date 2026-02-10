@@ -18,7 +18,7 @@ const SignUpPage = () => {
 
 	const handleSignUp = async (e) => {
 		e.preventDefault();
-    setisloading(true);
+       setisloading(true);
 		try {
 			const response = await fetch(`${url}/signup`, {
             method: "POST",

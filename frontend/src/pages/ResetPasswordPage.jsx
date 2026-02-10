@@ -1,33 +1,52 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuthStore } from "../store/authStore";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Input from "../components/Input";
-import { Lock } from "lucide-react";
+import { Lock, Code, Code2Icon, CodeSquare, CodeXmlIcon, Code2} from "lucide-react";
 import toast from "react-hot-toast";
 
 const ResetPasswordPage = () => {
+	const [code, setcode] = useState("");
 	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
-	const { resetPassword, error, isLoading, message } = useAuthStore();
-
-	const { token } = useParams();
+	const [message, setmessage] = useState('');
+    const [err, seterr] = useState("");
+	const url = 'http://localhost:8000/api/auth'
+	const [isLoading, setisloading] = useState(false);
+	const location  = useLocation();
+	const useremail = location.state.data;
 	const navigate = useNavigate();
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-
-		if (password !== confirmPassword) {
-			alert("Passwords do not match");
-			return;
-		}
+		setisloading(true)
 		try {
-			await resetPassword(token, password);
-
+          	const response = await fetch(`${url}/verify-forgot-code`, {
+            method: "PATCH",
+            mode: "cors",
+            headers:{
+                "content-Type": "application/json"
+            },
+            body:JSON.stringify({
+                email: useremail,
+                providedCode: code,
+                newPassword: password
+            })
+          });
+          const res = await response.json();
+		  console.log(res);
+		  if (res.success){
+			seterr('')
 			toast.success("Password reset successfully, redirecting to login page...");
+			setmessage(res.message);
 			setTimeout(() => {
-				navigate("/login");
-			}, 2000);
+				navigate('/')
+			}, 1000);
+		  }else{
+			setisloading(false);
+			seterr(res.message)
+		  }
+
 		} catch (error) {
 			console.error(error);
 			toast.error(error.message || "Error resetting password");
@@ -45,25 +64,25 @@ const ResetPasswordPage = () => {
 				<h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text'>
 					Reset Password
 				</h2>
-				{error && <p className='text-red-500 text-sm mb-4'>{error}</p>}
+				{err && <p className='text-red-500 text-sm mb-4'>{err}</p>}
 				{message && <p className='text-green-500 text-sm mb-4'>{message}</p>}
 
 				<form onSubmit={handleSubmit}>
 					<Input
-						icon={Lock}
-						type='password'
-						placeholder='New Password'
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
+						icon={CodeSquare}
+						type='number'
+						placeholder='enter sent code'
+						value={code}
+						onChange={(e) => setcode(e.target.value)}
 						required
 					/>
 
 					<Input
 						icon={Lock}
 						type='password'
-						placeholder='Confirm New Password'
-						value={confirmPassword}
-						onChange={(e) => setConfirmPassword(e.target.value)}
+						placeholder='New Password'
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
 						required
 					/>
 

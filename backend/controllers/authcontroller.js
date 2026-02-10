@@ -334,9 +334,13 @@ const sendforgotpassword = async (req, res) => {
 			existinguser.forgotpassword = hashedCodeValue;
 			existinguser.forgotpasswordcodevalidation = Date.now();
 			await existinguser.save();
-			return res.status(200).json({ success: true, message: 'Code sent!' });
+			return res.status(200).json({ success: true, message: 'Code sent!', user: {...existinguser._doc,
+                password: undefined} });
 		}
-		res.status(400).json({ success: false, message: 'Code sent failed!' });
+		res.status(400).json({ success: false, 
+            message: 'Code sent failed!'
+
+         });
 	} catch (error) {
 		console.log(error);
 	}
