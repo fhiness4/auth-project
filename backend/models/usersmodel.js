@@ -44,8 +44,7 @@ const userschema = mongoose.Schema({
 			select: false,
 		},
          profilepic:{
-        type: String,
-        default: false
+        type: String
     },
 },
     {

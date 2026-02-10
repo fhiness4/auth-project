@@ -50,8 +50,29 @@ const DashboardPage = () => {
 	    const uploaaded = await res.json();
 		if (uploaaded.url) {
 			console.log(uploaaded, uploaaded.url);
-			setimg(uploaaded.url);
-		   toast.success("Profile picture uploaded successfully");
+
+			// update user profile picture
+			const response = await fetch(`${url}/upload-img`, {
+            method: "POST",
+            mode: "cors",
+            headers:{
+                "content-Type": "application/json",
+                "authorization": `Bearer ${data.token}`,
+                "client": "not-browser"
+            }, 
+			body:JSON.stringify({
+                email: user.email,
+                url: uploaaded.url
+            })
+          });
+          const res = await response.json();
+		  if(res.success){
+			  uploadimg(res);
+			  toast.success("Profile picture uploaded successfully");
+		  }else{
+			toast.error("profile picture upload failed");
+		  }
+		   
 		}else{
             console.log(err);
 		   toast.error("Error uploading profile picture");
@@ -69,7 +90,7 @@ const DashboardPage = () => {
 			<h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-600 text-transparent bg-clip-text'>
 				Dashboard
 			</h2>
-		<img src={img} alt="profile" />
+		<img src={user.profilepic} alt="profile" />
            {/* upload profile pic */}
           <input 
 		   type="file" 
