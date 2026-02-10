@@ -439,8 +439,36 @@ const uploadpic = async (req, res)=>{
     } catch (error) {
        console.log(error) 
     }
+};
+
+
+// get user data
+const getuserdata = async (req, res)=>{
+    const {email} = req.body;
+    try {
+        const existinguser = await user.findOne({ email });
+		if (!existinguser) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'User does not exists!' });
+		}
+
+        if(existinguser){
+            return res.status(200).json({ success: true, message: 'user data retrieved', user: {...existinguser._doc,
+                password: undefined} });
+		};
+
+		res.status(400).json({ success: false, 
+            message: 'user data retrieval failed'
+
+         });
+
+
+    } catch (error) {
+       console.log(error) 
+    }
 }
 
 
 
-module.exports = { signup, signin , signout, sendverification, verifyverificationCode, changePassword, sendforgotpassword, verifyforgotpasswordcode, uploadpic};
+module.exports = { signup, signin , signout, sendverification, verifyverificationCode, changePassword, sendforgotpassword, verifyforgotpasswordcode, uploadpic, getuserdata};

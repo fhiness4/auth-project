@@ -3,9 +3,11 @@ import { useAuthStore } from "../store/authStore";
 import { formatDate } from "../utils/date";
 const url = 'http://localhost:8000/api/auth'
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 const DashboardPage = () => {
-	const { user, data, logout, error } = useAuthStore();
+	const { user, data, logout, getuser, uploadimg } = useAuthStore();
+	const [img, setimg] = useState("");
 
 	const handleLogout = async() => {
 		const response = await fetch(`${url}/signout`, {
@@ -30,7 +32,7 @@ const DashboardPage = () => {
 	};
 
 
-	const handleuploadchange = async(e)=>{
+	const handleuploadchange = async (e)=>{
        const file = e.target.files[0];
 	   if(!file){
 		   toast.error("Please select a file");
@@ -39,23 +41,23 @@ const DashboardPage = () => {
 	   }
 	   const data = new FormData();	
 	   data.append("file", file);
-	   data.append("upload-preset","finesse");
+	   data.append("upload_preset","finesse");
 	   data.append("cloud_name","db4x6r4zm");
-	 const res = await fetch("https://api.cloudinary.com/v1_1/db4x6r4zm/image/upload", {
+	   const res = await fetch("https://api.cloudinary.com/v1_1/db4x6r4zm/image/upload", {
 		   method: "POST",
 		   body: data
 	   })
 	    const uploaaded = await res.json();
 		if (uploaaded.url) {
-			console.log(data);
+			console.log(uploaaded, uploaaded.url);
+			setimg(uploaaded.url);
 		   toast.success("Profile picture uploaded successfully");
 		}else{
             console.log(err);
 		   toast.error("Error uploading profile picture");
 		}
 
-	   
-	}
+	};
 	return (
 		<motion.div
 			initial={{ opacity: 0, scale: 0.9 }}
@@ -67,11 +69,11 @@ const DashboardPage = () => {
 			<h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-600 text-transparent bg-clip-text'>
 				Dashboard
 			</h2>
-			<img src='' alt="profile" />
+		<img src={img} alt="profile" />
            {/* upload profile pic */}
           <input 
 		   type="file" 
-		   onChange={(e)=>handleuploadchange(e)}
+		   onChange={handleuploadchange}
 		  />
 
 
