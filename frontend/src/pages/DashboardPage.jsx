@@ -28,6 +28,34 @@ const DashboardPage = () => {
 			}, 1000);
 		  console.log(res)
 	};
+
+
+	const handleuploadchange = async(e)=>{
+       const file = e.target.files[0];
+	   if(!file){
+		   toast.error("Please select a file");
+		   return;
+
+	   }
+	   const data = new FormData();	
+	   data.append("file", file);
+	   data.append("upload-preset","finesse");
+	   data.append("cloud_name","db4x6r4zm");
+	 const res = await fetch("https://api.cloudinary.com/v1_1/db4x6r4zm/image/upload", {
+		   method: "POST",
+		   body: data
+	   })
+	    const uploaaded = await res.json();
+		if (uploaaded.url) {
+			console.log(data);
+		   toast.success("Profile picture uploaded successfully");
+		}else{
+            console.log(err);
+		   toast.error("Error uploading profile picture");
+		}
+
+	   
+	}
 	return (
 		<motion.div
 			initial={{ opacity: 0, scale: 0.9 }}
@@ -39,6 +67,15 @@ const DashboardPage = () => {
 			<h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-600 text-transparent bg-clip-text'>
 				Dashboard
 			</h2>
+			<img src='' alt="profile" />
+           {/* upload profile pic */}
+          <input 
+		   type="file" 
+		   onChange={(e)=>handleuploadchange(e)}
+		  />
+
+
+
 
 			<div className='space-y-6'>
 				<motion.div

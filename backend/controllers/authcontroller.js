@@ -412,7 +412,35 @@ const verifyforgotpasswordcode = async (req, res) => {
 	}
 };
 
+// upload profile pic
+const uploadpic = async (req, res)=>{
+    const {email, url} = req.body;
+    try {
+        const existinguser = await user.findOne({ email });
+		if (!existinguser) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'User does not exists!' });
+		}
+
+        if(existinguser){
+            existinguser.profilepic = url;
+            await existinguser.save()
+        return res.status(200).json({ success: true, message: 'image uploaded', user: {...existinguser._doc,
+                password: undefined} });
+		};
+
+		res.status(400).json({ success: false, 
+            message: 'image upload failed'
+
+         });
+
+
+    } catch (error) {
+       console.log(error) 
+    }
+}
 
 
 
-module.exports = { signup, signin , signout, sendverification, verifyverificationCode, changePassword, sendforgotpassword, verifyforgotpasswordcode};
+module.exports = { signup, signin , signout, sendverification, verifyverificationCode, changePassword, sendforgotpassword, verifyforgotpasswordcode, uploadpic};

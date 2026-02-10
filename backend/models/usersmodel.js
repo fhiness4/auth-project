@@ -43,6 +43,10 @@ const userschema = mongoose.Schema({
 			type: Number,
 			select: false,
 		},
+         profilepic:{
+        type: String,
+        default: false
+    },
 },
     {
         timestamps: true
